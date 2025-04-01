@@ -1,65 +1,97 @@
-#  Decentralized Prediction Market
+# Decentralized Prediction Market Platform
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+A modern, decentralized prediction market platform built with Next.js, TypeScript, and ThirdWeb. This platform allows users to create, participate in, and resolve prediction markets on the blockchain.
 
-## 📌 Overview
-This is a **decentralized prediction market** built on **Ethereum**, inspired by **Polymarket**. Users can place bets on event outcomes using ERC-20 tokens, ensuring **security, transparency, and trustless execution** via smart contracts.
+## Features
 
-## 🚀 Features
-- **Decentralized Market Creation** – Users can create prediction markets with custom questions and options.
-- **ERC-20 Token Betting** – Users stake tokens on selected outcomes.
-- **Automated Resolution & Payouts** – Market owners resolve events, and winnings are distributed automatically.
-- **Smart Contract Security** – Prevents reentrancy attacks and ensures fairness.
-- **Transparent & Immutable** – All transactions recorded on the blockchain.
+### Core Functionality
+- **Market Creation**: Create new prediction markets with custom questions and outcomes
+- **Market Participation**: Buy and trade shares in prediction markets
+- **Market Resolution**: Automatic resolution of markets based on real-world outcomes
+- **Real-time Updates**: Live updates of market status and share prices
 
-## 🛠️ Tech Stack
-- **Solidity** – Smart contract development
-- **Ethereum & EVM-compatible Chains**
-- **Thirdweb & OpenZeppelin** – Secure contract extensions
-- **Foundry** – Smart contract testing and development
+### User Interface
+- **Responsive Design**: Fully responsive layout that works on all devices
+- **Modern UI Components**: Built with Radix UI and Tailwind CSS
+- **Interactive Dashboard**: Tabbed interface for different market states
+- **Loading States**: Skeleton loading for better user experience
+- **Progress Tracking**: Visual indicators for market progress and time remaining
 
-## 📜 Smart Contract Functionality
-### **1️⃣ Market Creation**
-```solidity
-function createMarket(
-    string memory _question,
-    string memory _optionA,
-    string memory _optionB,
-    uint256 _duration
-) external returns (uint256);
+### Market States
+- **Active Markets**: Currently open for trading
+- **Pending Resolution**: Markets awaiting outcome resolution
+- **Resolved Markets**: Completed markets with final outcomes
+
+### Technical Features
+- **Blockchain Integration**: Built on ThirdWeb for seamless blockchain interaction
+- **Type Safety**: Full TypeScript support for better development experience
+- **Modern Stack**: Next.js 15 with React 19
+- **Styling**: Tailwind CSS with custom animations and transitions
+- **Component Architecture**: Modular and reusable components
+
+## Getting Started
+
+### Prerequisites
+- Node.js (v18 or higher)
+- npm or yarn
+- A Web3 wallet (e.g., MetaMask)
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/decentralized-stake.git
+cd decentralized-stake
 ```
-- Allows only the owner to create a market.
-- Sets the market question, options, and expiry time.
 
-### **2️⃣ Buying Shares (Betting)**
-```solidity
-function buyShares(
-    uint256 _marketId,
-    bool _isOptionA,
-    uint256 _amount
-) external;
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
 ```
-- Users stake tokens to support an outcome.
-- Ensures the market is still active before allowing bets.
 
-### **3️⃣ Resolving Markets**
-```solidity
-function resolveMarket(
-    uint256 _marketId,
-    MarketOutcome _outcome
-) external;
+3. Set up environment variables:
+Create a `.env` file in the root directory and add your environment variables:
 ```
-- Only the owner can resolve the market after its end time.
-- Determines the winning outcome and marks the market as resolved.
+NEXT_PUBLIC_THIRDWEB_CLIENT_ID=your_client_id
+```
 
-### **4️⃣ Claiming Winnings**
-```solidity
-function claimWinnings(uint256 _marketId) external;
+4. Run the development server:
+```bash
+npm run dev
+# or
+yarn dev
 ```
-- Users claim their rewards based on the correct prediction.
-- Prevents multiple claims per user.
+
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Project Structure
+
+```
+src/
+├── app/              # Next.js app directory
+├── components/       # React components
+│   ├── ui/          # Reusable UI components
+│   └── ...          # Feature-specific components
+├── constants/       # Constants and configurations
+├── hooks/          # Custom React hooks
+├── lib/            # Utility functions and helpers
+└── types/          # TypeScript type definitions
+```
 
 ## Contributors
 
 - **[Kushal Desai (23CS019)](https://github.com/KushalvDesai)**
 - **[Jeet Dhaduk (23CS020)](https://github.com/23CS020DhadukJeet)**
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- [Next.js](https://nextjs.org/)
+- [ThirdWeb](https://thirdweb.com/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Radix UI](https://www.radix-ui.com/)
