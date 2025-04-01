@@ -9,17 +9,17 @@ export function MarketCardSkeleton() {
                 <CardHeader>
                     <Badge 
                         variant="secondary" 
-                        className="mb-2 bg-gray-200 h-4 w-full"
+                        className="mb-2 bg-muted h-4 w-full dark:bg-muted/50"
                     />
-                    <CardTitle className="bg-gray-200 h-6 w-1/3" />
+                    <CardTitle className="bg-muted h-6 w-1/3 dark:bg-muted/50" />
                 </CardHeader>
                 <CardContent>
                     <div className="mb-4">
                         <div className="flex justify-between mb-2">
-                            <span className="bg-gray-200 h-4 w-1/4" />
-                            <span className="bg-gray-200 h-4 w-1/4" />
+                            <span className="bg-muted h-4 w-1/4 dark:bg-muted/50" />
+                            <span className="bg-muted h-4 w-1/4 dark:bg-muted/50" />
                         </div>
-                        <Progress value={0} className="h-2 bg-gray-200" />
+                        <Progress value={0} className="h-2 bg-muted dark:bg-muted/50" />
                     </div>
                 </CardContent>
             </div>

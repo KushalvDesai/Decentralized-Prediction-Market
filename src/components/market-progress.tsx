@@ -23,19 +23,19 @@ export function MarketProgress({
         <div className="mb-4">
             <div className="flex justify-between mb-2">
                 <span>
-                    <span className="font-bold text-sm">
+                    <span className="font-bold text-sm text-foreground">
                         {optionA}: {Math.floor(parseInt(toEther(totalOptionAShares)))}
                     </span>
                     {totalShares > 0 && (
-                        <span className="text-xs text-gray-500"> {Math.floor(yesPercentage)}%</span>
+                        <span className="text-xs text-muted-foreground"> {Math.floor(yesPercentage)}%</span>
                     )}
                 </span>
                 <span>
-                    <span className="font-bold text-sm">
+                    <span className="font-bold text-sm text-foreground">
                         {optionB}: {Math.floor(parseInt(toEther(totalOptionBShares)))}
                     </span>
                     {totalShares > 0 && (
-                        <span className="text-xs text-gray-500"> {Math.floor(100 - yesPercentage)}%</span>
+                        <span className="text-xs text-muted-foreground"> {Math.floor(100 - yesPercentage)}%</span>
                     )}
                 </span>
             </div>

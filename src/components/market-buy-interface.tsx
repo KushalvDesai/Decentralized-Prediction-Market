@@ -190,9 +190,9 @@ export function MarketBuyInterface({ marketId, market }: MarketBuyInterfaceProps
                     <div className="flex flex-col mb-4">
                         {buyingStep === 'allowance' ? (
                             // Approval step
-                            <div className="flex flex-col border-2 border-gray-200 rounded-lg p-4">
-                                <h2 className="text-lg font-bold mb-4">Approval Needed</h2>
-                                <p className="mb-4">You need to approve the transaction before proceeding.</p>
+                            <div className="flex flex-col border-2 border-border rounded-lg p-4">
+                                <h2 className="text-lg font-bold mb-4 text-foreground">Approval Needed</h2>
+                                <p className="mb-4 text-muted-foreground">You need to approve the transaction before proceeding.</p>
                                 <div className="flex justify-end">
                                     <Button 
                                         onClick={handleSetApproval} 
@@ -220,10 +220,10 @@ export function MarketBuyInterface({ marketId, market }: MarketBuyInterfaceProps
                             </div>
                         ) : buyingStep === 'confirm' ? (
                             // Confirmation step
-                            <div className="flex flex-col border-2 border-gray-200 rounded-lg p-4">
-                                <h2 className="text-lg font-bold mb-4">Confirm Transaction</h2>
-                                <p className="mb-4">
-                                    You are about to buy <span className="font-bold">
+                            <div className="flex flex-col border-2 border-border rounded-lg p-4">
+                                <h2 className="text-lg font-bold mb-4 text-foreground">Confirm Transaction</h2>
+                                <p className="mb-4 text-muted-foreground">
+                                    You are about to buy <span className="font-bold text-foreground">
                                         {amount} {selectedOption === 'A' ? market.optionA : market.optionB}
                                     </span> share(s).
                                 </p>
@@ -253,55 +253,44 @@ export function MarketBuyInterface({ marketId, market }: MarketBuyInterfaceProps
                                 </div>
                             </div>
                         ) : (
-                            // Amount input step
-                            <div className="flex flex-col">
-                                <span className="text-xs text-gray-500 mb-1">
-                                    {`1 ${selectedOption === 'A' ? market.optionA : market.optionB} = 1 PREDICT`}
-                                </span>
-                                <div className="flex flex-col gap-1 mb-4">
-                                    <div className="flex items-center gap-2 overflow-visible">
-                                        <div className="flex-grow relative">
-                                            <Input
-                                                type="number"
-                                                min="0"
-                                                step="1"
-                                                placeholder="Enter amount"
-                                                value={amount}
-                                                onChange={(e) => {
-                                                    const value = Math.max(0, Number(e.target.value));
-                                                    setAmount(value);
-                                                    setError(null);
-                                                }}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === '-' || e.key === 'e') {
-                                                        e.preventDefault();
-                                                    }
-                                                }}
-                                                className={cn(
-                                                    "w-full",
-                                                    error && "border-red-500 focus-visible:ring-red-500"
-                                                )}
-                                            />
-                                        </div>
-                                        <span className="font-bold whitespace-nowrap">
-                                            {selectedOption === 'A' ? market.optionA : market.optionB}
-                                        </span>
+                            // Initial buy step
+                            <div className="flex flex-col border-2 border-border rounded-lg p-4">
+                                <h2 className="text-lg font-bold mb-4 text-foreground">
+                                    Buy {selectedOption === 'A' ? market.optionA : market.optionB} Shares
+                                </h2>
+                                <div className="flex flex-col gap-4">
+                                    <div>
+                                        <label htmlFor="amount" className="block text-sm font-medium text-muted-foreground mb-1">
+                                            Amount
+                                        </label>
+                                        <Input
+                                            id="amount"
+                                            type="number"
+                                            value={amount}
+                                            onChange={(e) => setAmount(Number(e.target.value))}
+                                            className="w-full"
+                                            min="0"
+                                        />
                                     </div>
-                                    <div className="min-h-[20px]">
-                                        {error && (
-                                            <span className="text-sm text-red-500">
-                                                {error}
-                                            </span>
-                                        )}
+                                    {error && (
+                                        <p className="text-sm text-destructive">{error}</p>
+                                    )}
+                                    <div className="flex justify-end">
+                                        <Button 
+                                            onClick={checkApproval}
+                                            className="mb-2"
+                                            disabled={amount <= 0}
+                                        >
+                                            Next
+                                        </Button>
+                                        <Button 
+                                            onClick={handleCancel} 
+                                            className="ml-2" 
+                                            variant="outline"
+                                        >
+                                            Cancel
+                                        </Button>
                                     </div>
-                                </div>
-                                <div className="flex justify-between gap-4">
-                                    <Button onClick={checkApproval} className="flex-1">
-                                        Confirm
-                                    </Button>
-                                    <Button onClick={handleCancel} variant="outline" className="flex-1">
-                                        Cancel
-                                    </Button>
                                 </div>
                             </div>
                         )}

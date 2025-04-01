@@ -1,18 +1,28 @@
 "use client";
 
-import { ConnectButton, lightTheme, useActiveAccount } from "thirdweb/react";
+import { ConnectButton, darkTheme, lightTheme, useActiveAccount } from "thirdweb/react";
 import { client } from "@/app/client";
 import { sepolia } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import { ThemeToggle } from "@/components/theme-toggle";
+import { useTheme } from "next-themes";
 
 export function Navbar() {
     const account = useActiveAccount();
     const [isClaimLoading, setIsClaimLoading] = useState(false);
     const { toast } = useToast();
+    const { theme, systemTheme } = useTheme();
+    const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('light');
+
+    useEffect(() => {
+        // Handle system theme preference
+        const resolvedTheme = theme === 'system' ? systemTheme : theme;
+        setCurrentTheme(resolvedTheme as 'light' | 'dark');
+    }, [theme, systemTheme]);
 
     const handleClaimTokens = async () => {
         setIsClaimLoading(true);
@@ -47,6 +57,7 @@ export function Navbar() {
         <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-bold">Decentralized Prediction Market</h1>
             <div className="items-center flex gap-2">
+                <ThemeToggle />
                 {account && (
                     <Button 
                         onClick={handleClaimTokens}
@@ -65,7 +76,7 @@ export function Navbar() {
                 )}
                 <ConnectButton 
                     client={client} 
-                    theme={lightTheme()}
+                    theme={currentTheme === 'dark' ? darkTheme() : lightTheme()}
                     chain={sepolia}
                     connectButton={{
                         style: {
