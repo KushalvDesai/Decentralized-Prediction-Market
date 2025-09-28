@@ -6,10 +6,11 @@ import { sepolia } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Loader2, Settings } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useTheme } from "next-themes";
+import Link from "next/link";
 
 export function Navbar() {
     const account = useActiveAccount();
@@ -55,7 +56,17 @@ export function Navbar() {
     
     return (
         <div className="flex justify-between items-center mb-6">
-            <h1 className="text-2xl font-bold">Decentralized Prediction Market</h1>
+            <div className="flex items-center gap-4">
+                <Link href="/" className="text-2xl font-bold hover:text-blue-600 transition-colors">
+                    Decentralized Prediction Market
+                </Link>
+                <Link href="/admin">
+                    <Button variant="outline" size="sm" className="flex items-center gap-2">
+                        <Settings className="h-4 w-4" />
+                        Admin
+                    </Button>
+                </Link>
+            </div>
             <div className="items-center flex gap-2">
                 <ThemeToggle />
                 {account && (

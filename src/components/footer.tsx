@@ -14,7 +14,7 @@ export function Footer() {
                             rel="noreferrer"
                             className="font-medium underline underline-offset-4"
                         >
-                            Kushal Desai & Jeet Dhaduk
+                            Kushal Desai
                         </Link>
                         . The source code is available on{" "}
                         <Link
