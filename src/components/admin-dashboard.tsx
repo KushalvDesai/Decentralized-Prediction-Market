@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useReadContract } from "thirdweb/react";
+import { useReadContract, useActiveAccount } from "thirdweb/react";
 import { prepareContractCall } from "thirdweb";
 import { useSendTransaction } from "thirdweb/react";
 import { contract } from "@/constants/contract";
@@ -11,11 +11,14 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/components/ui/use-toast";
-import { Loader2, Calendar, Users, TrendingUp, Settings } from "lucide-react";
+import { Loader2, Calendar, Users, TrendingUp, Settings, Shield, AlertTriangle } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export function AdminDashboard() {
   const { toast } = useToast();
   const { mutate: sendTransaction } = useSendTransaction();
+  const router = useRouter();
+  const account = useActiveAccount();
 
   // State for form inputs
   const [selectedMarketId, setSelectedMarketId] = useState("");
@@ -29,6 +32,13 @@ export function AdminDashboard() {
   const [resolveForm, setResolveForm] = useState({
     marketId: "",
     outcome: "",
+  });
+
+  // Owner check hook
+  const { data: contractOwner, isPending: isOwnerPending } = useReadContract({
+    contract,
+    method: "function owner() view returns (address)",
+    params: [],
   });
 
   // Contract read hooks
@@ -58,6 +68,74 @@ export function AdminDashboard() {
       "function markets(uint256) view returns (string question, uint256 endTime, uint8 outcome, string Option_A, string Option_B, uint256 totaloptionAshares, uint256 totaloptionBshares, bool resolved)",
     params: selectedMarketId ? [BigInt(selectedMarketId)] : undefined,
   });
+
+  // Access control check
+  useEffect(() => {
+    if (!isOwnerPending && contractOwner && account?.address) {
+      if (contractOwner.toLowerCase() !== account.address.toLowerCase()) {
+        toast({
+          title: "Access Denied",
+          description: "Only the contract owner can access the admin dashboard",
+          variant: "destructive",
+        });
+        router.push("/");
+      }
+    }
+  }, [contractOwner, account?.address, isOwnerPending, router, toast]);
+
+  // Show loading while checking owner
+  if (isOwnerPending || !account) {
+    return (
+      <div className="container mx-auto p-6 flex items-center justify-center min-h-[400px]">
+        <Card className="w-full max-w-md">
+          <CardContent className="flex flex-col items-center space-y-4 pt-6">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <p className="text-lg font-medium">Verifying admin access...</p>
+            <p className="text-sm text-muted-foreground text-center">
+              Please ensure you're connected with the contract owner account
+            </p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  // Show unauthorized message if not owner
+  if (contractOwner && account?.address && contractOwner.toLowerCase() !== account.address.toLowerCase()) {
+    return (
+      <div className="container mx-auto p-6 flex items-center justify-center min-h-[400px]">
+        <Card className="w-full max-w-md">
+          <CardContent className="flex flex-col items-center space-y-4 pt-6">
+            <div className="flex items-center justify-center w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full">
+              <AlertTriangle className="h-8 w-8 text-red-600 dark:text-red-400" />
+            </div>
+            <div className="text-center space-y-2">
+              <h3 className="text-lg font-semibold">Access Denied</h3>
+              <p className="text-sm text-muted-foreground">
+                Only the contract owner can access the admin dashboard
+              </p>
+              <div className="mt-4 p-3 bg-muted rounded-md">
+                <p className="text-xs font-mono break-all">
+                  <strong>Contract Owner:</strong><br />
+                  {contractOwner}
+                </p>
+                <p className="text-xs font-mono break-all mt-2">
+                  <strong>Your Address:</strong><br />
+                  {account.address}
+                </p>
+              </div>
+            </div>
+            <Button 
+              onClick={() => router.push("/")}
+              className="w-full"
+            >
+              Return to Home
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Create Market function
   const handleCreateMarket = () => {
@@ -164,9 +242,17 @@ export function AdminDashboard() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center gap-2 mb-6">
-        <Settings className="h-8 w-8" />
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-2">
+          <Settings className="h-8 w-8" />
+          <h1 className="text-3xl font-bold">Admin Dashboard</h1>
+        </div>
+        <div className="flex items-center gap-2">
+          <Shield className="h-5 w-5 text-green-600" />
+          <Badge variant="default" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+            Contract Owner
+          </Badge>
+        </div>
       </div>
 
       {/* Market Count Overview */}

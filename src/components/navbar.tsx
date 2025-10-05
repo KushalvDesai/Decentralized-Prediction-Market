@@ -1,6 +1,6 @@
 "use client";
 
-import { ConnectButton, darkTheme, lightTheme, useActiveAccount } from "thirdweb/react";
+import { ConnectButton, darkTheme, lightTheme, useActiveAccount, useReadContract } from "thirdweb/react";
 import { client } from "@/app/client";
 import { sepolia } from "thirdweb/chains";
 import { inAppWallet } from "thirdweb/wallets";
@@ -11,6 +11,7 @@ import { useToast } from "@/components/ui/use-toast";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+import { contract } from "@/constants/contract";
 
 export function Navbar() {
     const account = useActiveAccount();
@@ -18,6 +19,17 @@ export function Navbar() {
     const { toast } = useToast();
     const { theme, systemTheme } = useTheme();
     const [currentTheme, setCurrentTheme] = useState<'light' | 'dark'>('light');
+
+    // Owner check
+    const { data: contractOwner } = useReadContract({
+        contract,
+        method: "function owner() view returns (address)",
+        params: [],
+    });
+
+    // Check if current user is the contract owner
+    const isOwner = contractOwner && account?.address && 
+        contractOwner.toLowerCase() === account.address.toLowerCase();
 
     useEffect(() => {
         // Handle system theme preference
@@ -60,12 +72,14 @@ export function Navbar() {
                 <Link href="/" className="text-2xl font-bold hover:text-blue-600 transition-colors">
                     Decentralized Prediction Market
                 </Link>
-                <Link href="/admin">
-                    <Button variant="outline" size="sm" className="flex items-center gap-2">
-                        <Settings className="h-4 w-4" />
-                        Admin
-                    </Button>
-                </Link>
+                {isOwner && (
+                    <Link href="/admin">
+                        <Button variant="outline" size="sm" className="flex items-center gap-2">
+                            <Settings className="h-4 w-4" />
+                            Admin
+                        </Button>
+                    </Link>
+                )}
             </div>
             <div className="items-center flex gap-2">
                 <ThemeToggle />
